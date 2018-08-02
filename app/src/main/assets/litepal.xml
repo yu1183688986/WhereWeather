@@ -1,0 +1,11 @@
+<litepal>
+    <dbname value="where_weather"/>
+
+    <version value="1"/>
+
+    <list>
+        <mapping class='www.whereweather.com.db.Province'/>
+        <mapping class='www.whereweather.com.db.City'/>
+        <mapping class='www.whereweather.com.db.County'/>
+    </list>
+</litepal>
