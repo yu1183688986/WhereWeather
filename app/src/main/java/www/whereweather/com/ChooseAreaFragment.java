@@ -93,7 +93,7 @@ public class ChooseAreaFragment extends Fragment {
         View view = inflater.inflate(R.layout.choose_area,container,false);
         titleText = view.findViewById(R.id.title_text);
         backButton = view.findViewById(R.id.back_button);
-        progressBar = view.findViewById(R.id.progressBar);
+        //progressBar = view.findViewById(R.id.progressBar);
         listView = view.findViewById(R.id.list_view);
         adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,dataList);
         listView.setAdapter(adapter);
@@ -234,22 +234,27 @@ public class ChooseAreaFragment extends Fragment {
      * 显示进度条
      */
     private void showProgress(){
-        progressBar.setVisibility(View.VISIBLE);
-        if (progressDialog == null){
+        if (progressBar == null){
+            progressBar = getView().getRootView().findViewById(R.id.progressBar);
+        }
+            progressBar.setVisibility(View.VISIBLE);
+        /*if (progressDialog == null){
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Loading...");
             progressDialog.setCancelable(false);
         }
-        progressDialog.show();
+        progressDialog.show();*/
     }
 
     /**
      * 关闭进度条
      */
     private void closeProgress(){
+
         progressBar.setVisibility(View.GONE);
-        if (progressDialog != null){
+
+        /*if (progressDialog != null){
             progressDialog.dismiss();
-        }
+        }*/
     }
 }

@@ -11,5 +11,13 @@
         android:name='www.whereweather.com.ChooseAreaFragment'
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_gravity="center"
+        android:indeterminate="false"
+        android:visibility="invisible"
+        android:indeterminateDrawable="@drawable/progress_indeterminate_running" />
 
 </FrameLayout>
