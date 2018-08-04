@@ -6,6 +6,8 @@ package www.whereweather.com;
  * @describe 用于遍历省市县数据的碎片
  */
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,7 +45,7 @@ public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_COUNTY = 2;
 
     private ProgressBar progressBar; //ProgressDialog过时，用它替换
-    private ProgressDialog progressDialog;
+    //private ProgressDialog progressDialog;
 
 
     private TextView titleText;
@@ -110,6 +112,12 @@ public class ChooseAreaFragment extends Fragment {
             }else if (currentLevel == LEVEL_CITY){
                 selectedCity = cityList.get(position);
                 queryCounties();
+            }else if (currentLevel == LEVEL_COUNTY){
+                String weatherId = countyList.get(position).getWeatherId();
+                Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                intent.putExtra("weather_id",weatherId);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
         backButton.setOnClickListener(v ->{
@@ -234,10 +242,17 @@ public class ChooseAreaFragment extends Fragment {
      * 显示进度条
      */
     private void showProgress(){
-        if (progressBar == null){
-            progressBar = getView().getRootView().findViewById(R.id.progressBar);
-        }
+        View view = getView();
+        if (view != null && view.getRootView() != null){
+            if (progressBar == null){
+                progressBar = view.getRootView().findViewById(R.id.progressBar);
+                if (android.os.Build.VERSION.SDK_INT > 22) {//android 6.0替换clip的加载动画
+                    final Drawable drawable =  MyApplication.getContext().getResources().getDrawable(R.drawable.progress_indeterminate_running);
+                    progressBar.setIndeterminateDrawable(drawable);
+                }
+            }
             progressBar.setVisibility(View.VISIBLE);
+        }
         /*if (progressDialog == null){
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Loading...");
