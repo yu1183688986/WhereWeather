@@ -221,7 +221,7 @@ public class ChooseAreaFragment extends Fragment {
                 }else if ("county".equals(type)){
                     result = Utility.handleCountyResponse(responseText,selectedCity.getId());
                 }
-                //从新加载数据库中的数据
+                //重新加载数据库中的数据
                 if (result){
                     getActivity().runOnUiThread(() ->{
                         closeProgress();
@@ -246,10 +246,10 @@ public class ChooseAreaFragment extends Fragment {
         if (view != null && view.getRootView() != null){
             if (progressBar == null){
                 progressBar = view.getRootView().findViewById(R.id.progressBar);
-                if (android.os.Build.VERSION.SDK_INT > 22) {//android 6.0替换clip的加载动画
+                /*if (android.os.Build.VERSION.SDK_INT > 22) {//android 6.0替换clip的加载动画
                     final Drawable drawable =  MyApplication.getContext().getResources().getDrawable(R.drawable.progress_indeterminate_running);
                     progressBar.setIndeterminateDrawable(drawable);
-                }
+                }*/
             }
             progressBar.setVisibility(View.VISIBLE);
         }
