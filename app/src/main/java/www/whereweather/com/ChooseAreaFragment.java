@@ -45,7 +45,7 @@ public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_COUNTY = 2;
 
     private ProgressBar progressBar; //ProgressDialog过时，用它替换
-    //private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
 
     private TextView titleText;
@@ -95,7 +95,6 @@ public class ChooseAreaFragment extends Fragment {
         View view = inflater.inflate(R.layout.choose_area,container,false);
         titleText = view.findViewById(R.id.title_text);
         backButton = view.findViewById(R.id.back_button);
-        //progressBar = view.findViewById(R.id.progressBar);
         listView = view.findViewById(R.id.list_view);
         adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,dataList);
         listView.setAdapter(adapter);
@@ -114,10 +113,17 @@ public class ChooseAreaFragment extends Fragment {
                 queryCounties();
             }else if (currentLevel == LEVEL_COUNTY){
                 String weatherId = countyList.get(position).getWeatherId();
-                Intent intent = new Intent(getActivity(),WeatherActivity.class);
-                intent.putExtra("weather_id",weatherId);
-                startActivity(intent);
-                getActivity().finish();
+                if (getActivity() instanceof MainActivity){
+                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
+                }else if (getActivity() instanceof WeatherActivity){
+                    WeatherActivity activity = (WeatherActivity) getActivity();
+                    activity.drawerLayout.closeDrawers();
+                    activity.swipeRefresh.setRefreshing(true);
+                    activity.requestWeather(weatherId);
+                }
             }
         });
         backButton.setOnClickListener(v ->{
@@ -200,6 +206,7 @@ public class ChooseAreaFragment extends Fragment {
      * 根据传入的地址和类型从服务器上查询省市县数据
      */
     private void qerryFromServer(String address,final String type){
+
         showProgress();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
@@ -242,34 +249,49 @@ public class ChooseAreaFragment extends Fragment {
      * 显示进度条
      */
     private void showProgress(){
-        View view = getView();
-        if (view != null && view.getRootView() != null){
-            if (progressBar == null){
-                progressBar = view.getRootView().findViewById(R.id.progressBar);
-                /*if (android.os.Build.VERSION.SDK_INT > 22) {//android 6.0替换clip的加载动画
-                    final Drawable drawable =  MyApplication.getContext().getResources().getDrawable(R.drawable.progress_indeterminate_running);
-                    progressBar.setIndeterminateDrawable(drawable);
-                }*/
+        if (getActivity() instanceof MainActivity){
+            View view = getView();
+            if (view != null){
+                progressBar = view.findViewById(R.id.progressBar);
+                if (view.getRootView() != null){
+                    progressBar = view.getRootView().findViewById(R.id.progressBar);
+                }
             }
             progressBar.setVisibility(View.VISIBLE);
+        }else {
+             if (progressDialog == null){
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setMessage("Loading...");
+                progressDialog.setCancelable(false);
+            }
+            progressDialog.show();
         }
-        /*if (progressDialog == null){
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCancelable(false);
-        }
-        progressDialog.show();*/
+        /*if (view != null && view.getRootView() != null){
+            if (progressBar == null){
+                progressBar = view.getRootView().findViewById(R.id.progressBar);
+                *//*if (android.os.Build.VERSION.SDK_INT > 22) {//android 6.0替换clip的加载动画
+                    final Drawable drawable =  MyApplication.getContext().getResources().getDrawable(R.drawable.progress_indeterminate_running);
+                    progressBar.setIndeterminateDrawable(drawable);
+                }*//*
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        }*/
+       // progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
      * 关闭进度条
      */
     private void closeProgress(){
+        if (getActivity() instanceof MainActivity){
+            if (progressBar != null){
+                progressBar.setVisibility(View.GONE);
+            }
+        }else {
+            if (progressDialog != null){
+                progressDialog.dismiss();
+            }
+        }
 
-        progressBar.setVisibility(View.GONE);
-
-        /*if (progressDialog != null){
-            progressDialog.dismiss();
-        }*/
     }
 }
